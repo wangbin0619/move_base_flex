@@ -43,6 +43,14 @@
 namespace mbf_abstract_nav
 {
 
+bool isCancelable(const actionlib_msgs::GoalStatus &status)
+{
+  return status.status == actionlib_msgs::GoalStatus::PENDING ||
+         status.status == actionlib_msgs::GoalStatus::RECALLING ||
+         status.status == actionlib_msgs::GoalStatus::ACTIVE ||
+         status.status == actionlib_msgs::GoalStatus::PREEMPTING;
+}
+
 ControllerAction::ControllerAction(
     const std::string &action_name,
     const mbf_utility::RobotInformation &robot_info)
@@ -83,9 +91,14 @@ void ControllerAction::start(
                                 goal_handle.getGoal()->angle_tolerance);
       // Update also goal pose, so the feedback remains consistent
       goal_pose_ = goal_handle.getGoal()->path.poses.back();
-      mbf_msgs::ExePathResult result;
-      fillExePathResult(mbf_msgs::ExePathResult::CANCELED, "Goal preempted by a new plan", result);
-      concurrency_slots_[slot].goal_handle.setCanceled(result, result.message);
+
+      // Check if the current goal still active
+      if(isCancelable(concurrency_slots_[slot].goal_handle.getGoalStatus()))
+      {
+        mbf_msgs::ExePathResult result;
+        fillExePathResult(mbf_msgs::ExePathResult::CANCELED, "Goal preempted by a new plan", result);
+        concurrency_slots_[slot].goal_handle.setCanceled(result, result.message);
+      }
       concurrency_slots_[slot].goal_handle = goal_handle;
       concurrency_slots_[slot].goal_handle.setAccepted();
     }
