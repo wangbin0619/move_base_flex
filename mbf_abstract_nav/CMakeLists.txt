@@ -90,12 +90,10 @@ install(DIRECTORY include/${PROJECT_NAME}/
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
 
-  # ros-tests
   # gmock-tests only for noetic and newer
-  if(${roscpp_VERSION} VERSION_GREATER 1.15.0)
-    add_rostest_gmock(abstract_planner_execution_test
-      test/abstract_planner_execution.launch
-      test/abstract_planner_execution.cpp)
-    target_link_libraries(abstract_planner_execution_test ${MBF_ABSTRACT_SERVER_LIB})
-  endif()
+  # if(${roscpp_VERSION} VERSION_GREATER 1.15.0)
+  add_rostest_gmock(abstract_planner_execution_test
+    test/abstract_planner_execution.launch
+    test/abstract_planner_execution.cpp)
+  target_link_libraries(abstract_planner_execution_test ${MBF_ABSTRACT_SERVER_LIB})
 endif()
