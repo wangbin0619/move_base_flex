@@ -48,7 +48,7 @@ AbstractPlannerExecution::AbstractPlannerExecution(
     const mbf_abstract_core::AbstractPlanner::Ptr &planner_ptr,
     const MoveBaseFlexConfig &config) :
   AbstractExecutionBase(name),
-    planner_(planner_ptr), state_(INITIALIZED), planning_(false),
+    planner_(planner_ptr), state_(INITIALIZED), max_retries_(0), planning_(false),
     has_new_start_(false), has_new_goal_(false)
 {
   ros::NodeHandle private_nh("~");
