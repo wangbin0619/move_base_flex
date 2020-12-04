@@ -127,9 +127,13 @@ void AbstractNavigationServer::callActionGetPath(ActionServerGetPath::GoalHandle
   const geometry_msgs::Point &p = goal.target_pose.pose.position;
 
   std::string planner_name;
+  // 如果有任意 plugin 加载的话则正常处理
   if(!planner_plugin_manager_.getLoadedNames().empty())
   {
-    planner_name = goal.planner.empty() ? planner_plugin_manager_.getLoadedNames().front() : goal.planner;
+    // 原逻辑是先看 Goal 如果指定了 Planner 的话则以它为优先，否则取已经加载的 Plugin 的，这对多 Plugin 是正常的
+    // planner_name = goal.planner.empty() ? planner_plugin_manager_.getLoadedNames().front() : goal.planner;
+    // 临时方案改为 以已经配的单个 Planner 为优先而不去考虑 Goal 上带下来的
+    planner_name = planner_plugin_manager_.getLoadedNames().front();
   }
   else
   {
@@ -145,14 +149,19 @@ void AbstractNavigationServer::callActionGetPath(ActionServerGetPath::GoalHandle
   {
     mbf_msgs::GetPathResult result;
     result.outcome = mbf_msgs::GetPathResult::INVALID_PLUGIN;
-    result.message = "No plugin loaded with the given name \"" + goal.planner + "\"!";
+    result.message = "Planner - No plugin loaded with the given name \"" + planner_name + " and goal.planner " + goal.planner + "\"!";
+    result.message = result.message + " Planner - planner_plugin_manager_.getLoadedNames().front() \"" + planner_plugin_manager_.getLoadedNames().front() + "\"!";
+    result.message = result.message + " Planner - goal.planner \"" + goal.planner + "\"!";
+
     ROS_WARN_STREAM_NAMED("get_path", result.message);
+
     goal_handle.setRejected(result, result.message);
     return;
   }
 
   mbf_abstract_core::AbstractPlanner::Ptr planner_plugin = planner_plugin_manager_.getPlugin(planner_name);
-  ROS_DEBUG_STREAM_NAMED("get_path", "Start action \"get_path\" using planner \"" << planner_name
+  // ROS_DEBUG_STREAM_NAMED
+  ROS_WARN_STREAM_NAMED("get_path", "Start action \"get_path\" using planner \"" << planner_name
                         << "\" of type \"" << planner_plugin_manager_.getType(planner_name) << "\"");
 
 
@@ -187,7 +196,9 @@ void AbstractNavigationServer::callActionExePath(ActionServerExePath::GoalHandle
   std::string controller_name;
   if(!controller_plugin_manager_.getLoadedNames().empty())
   {
-    controller_name = goal.controller.empty() ? controller_plugin_manager_.getLoadedNames().front() : goal.controller;
+    // 改变优先级
+    // controller_name = goal.controller.empty() ? controller_plugin_manager_.getLoadedNames().front() : goal.controller;
+    controller_name = controller_plugin_manager_.getLoadedNames().front();
   }
   else
   {
@@ -203,7 +214,7 @@ void AbstractNavigationServer::callActionExePath(ActionServerExePath::GoalHandle
   {
     mbf_msgs::ExePathResult result;
     result.outcome = mbf_msgs::ExePathResult::INVALID_PLUGIN;
-    result.message = "No plugin loaded with the given name \"" + goal.controller + "\"!";
+    result.message = "Controller - No plugin loaded with the given name \"" + controller_name + " and goal.planner " + goal.controller + "\"!";
     ROS_WARN_STREAM_NAMED("exe_path", result.message);
     goal_handle.setRejected(result, result.message);
     return;
@@ -246,7 +257,9 @@ void AbstractNavigationServer::callActionRecovery(ActionServerRecovery::GoalHand
 
   if(!recovery_plugin_manager_.getLoadedNames().empty())
   {
-    recovery_name = goal.behavior.empty() ? recovery_plugin_manager_.getLoadedNames().front() : goal.behavior;
+    // 改变优先级
+    // recovery_name = goal.behavior.empty() ? recovery_plugin_manager_.getLoadedNames().front() : goal.behavior;
+    recovery_name = recovery_plugin_manager_.getLoadedNames().front();
   }
   else
   {
@@ -262,7 +275,7 @@ void AbstractNavigationServer::callActionRecovery(ActionServerRecovery::GoalHand
   {
     mbf_msgs::RecoveryResult result;
     result.outcome = mbf_msgs::RecoveryResult::INVALID_PLUGIN;
-    result.message = "No plugin loaded with the given name \"" + goal.behavior + "\"!";
+    result.message = "Recovery - No plugin loaded with the given name \"" + recovery_name + " and goal.planner " + goal.behavior + "\"!";
     ROS_WARN_STREAM_NAMED("recovery", result.message);
     goal_handle.setRejected(result, result.message);
     return;

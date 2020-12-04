@@ -3,6 +3,7 @@
 
 geometry_msgs/PoseStamped target_pose
 
+# 此处会去取设置的 Planner Controller 
 # Controller to use; defaults to the first one specified on "controllers" parameter
 string controller
 
