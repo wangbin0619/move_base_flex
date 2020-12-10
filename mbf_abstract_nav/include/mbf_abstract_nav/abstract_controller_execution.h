@@ -76,7 +76,7 @@ namespace mbf_abstract_nav
   {
   public:
 
-    static const double DEFAULT_CONTROLLER_FREQUENCY;
+    static const double DEFAULT_CONTROLLER_FREQUENCY; // 100HZ 
 
     typedef boost::shared_ptr<AbstractControllerExecution > Ptr;
 
