@@ -10,7 +10,7 @@
 # Also, you need to touch https://github.com/magazino/move_base_flex/blob/master/mbf_costmap_nav/cfg/MoveBaseFlex.cfg
 # when recompiling to ensure configuration code is regenerated with the new parameters
 
-# need this only for dataype declarations
+# need this only for dataype declarations - wangbin
 from dynamic_reconfigure.parameter_generator_catkin import str_t, double_t, int_t, bool_t
 
 

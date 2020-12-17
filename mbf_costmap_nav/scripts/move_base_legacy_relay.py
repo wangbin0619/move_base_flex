@@ -79,6 +79,10 @@ def mb_reconf_cb(config, level):
 
     mbf_config = copy.deepcopy(config)
 
+    print("++++++++++++++++++  Move Base Legacy Relay - reconfigure +++++++++++++++++++++++++++++++")
+    print(mbf_config)
+    print("++++++++++++++++++  Move Base Legacy Relay - reconfigure +++++++++++++++++++++++++++++++")
+
     # Map move_base legacy parameters to new mbf ones, and drop those not supported
     # mbf doesn't allow changing plugins dynamically, but we can provide them in the
     # action goal, so we keep both base_local_planner and base_global_planner
