@@ -67,6 +67,9 @@ def make_plan_cb(request):
 def mbf_feedback_cb(feedback):
     mb_as.publish_feedback(mb_msgs.MoveBaseFeedback(base_position=feedback.current_pose))
 
+# wangbin added the global variable to skip the first time parameter overwritten by somebody
+global first_entry
+first_entry = True
 
 def mb_reconf_cb(config, level):
     rospy.logdebug("Relaying legacy move_base reconfigure request to mbf")
@@ -81,7 +84,12 @@ def mb_reconf_cb(config, level):
 
     print("++++++++++++++++++  Move Base Legacy Relay - reconfigure +++++++++++++++++++++++++++++++")
     print(mbf_config)
-    print("++++++++++++++++++  Move Base Legacy Relay - reconfigure +++++++++++++++++++++++++++++++")
+    global first_entry
+    if first_entry:
+        print("++++++++++++++++++  Move Base Legacy Relay - reconfigure - First Time SKIP +++++++++++++")
+        first_entry = False
+        return config
+    print("++++++++++++++++++  Move Base Legacy Relay - reconfigure - NOT First Time Continue +++++++++")
 
     # Map move_base legacy parameters to new mbf ones, and drop those not supported
     # mbf doesn't allow changing plugins dynamically, but we can provide them in the
