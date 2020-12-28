@@ -135,10 +135,10 @@ void AbstractNavigationServer::callActionGetPath(ActionServerGetPath::GoalHandle
     // than configured planner type.
     // planner_name = goal.planner.empty() ? planner_plugin_manager_.getLoadedNames().front() : goal.planner;
     planner_name = planner_plugin_manager_.getLoadedNames().front();
-    ROS_WARN_STREAM_NAMED("get_path", "Choose planner \"get_path\" using planner \"" << planner_name
-                        << "\" of type \"" << planner_plugin_manager_.getType(planner_name) << "\""); 
-    ROS_WARN_STREAM_NAMED("get_path", "Goal planner \"get_path\" using planner \"" << goal.planner
-                        << "\""); 
+    // ROS_WARN_STREAM_NAMED("get_path", "Choose planner \"get_path\" using planner \"" << planner_name
+    //                     << "\" of type \"" << planner_plugin_manager_.getType(planner_name) << "\""); 
+    // ROS_WARN_STREAM_NAMED("get_path", "Goal planner \"get_path\" using planner \"" << goal.planner
+    //                     << "\""); 
   }
   else
   {
