@@ -276,7 +276,7 @@ void ControllerAction::run(GoalHandle &goal_handle, AbstractControllerExecution 
 
             execution.cancel();
             controller_active = false;
-            fillExePathResult(mbf_msgs::ExePathResult::OSCILLATION, "MBF: Oscillation detected!", result);
+            fillExePathResult(mbf_msgs::ExePathResult::OSCILLATION, "Oscillation detected!", result);
             goal_handle.setAborted(result, result.message);
             break;
           }
