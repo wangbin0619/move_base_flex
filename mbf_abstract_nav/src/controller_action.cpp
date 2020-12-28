@@ -271,12 +271,12 @@ void ControllerAction::run(GoalHandle &goal_handle, AbstractControllerExecution 
           }
           else if (last_oscillation_reset + oscillation_timeout < ros::Time::now())
           {
-            ROS_WARN_STREAM_NAMED(name_, "The controller is oscillating for "
+            ROS_WARN_STREAM_NAMED(name_, "MBF: The controller is oscillating for "
                 << (ros::Time::now() - last_oscillation_reset).toSec() << "s");
 
             execution.cancel();
             controller_active = false;
-            fillExePathResult(mbf_msgs::ExePathResult::OSCILLATION, "Oscillation detected!", result);
+            fillExePathResult(mbf_msgs::ExePathResult::OSCILLATION, "MBF: Oscillation detected!", result);
             goal_handle.setAborted(result, result.message);
             break;
           }
